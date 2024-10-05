@@ -96,6 +96,9 @@ public interface Matrix<T> extends Cloneable {
       } // for col
     } // for row
 
+    // Add some space on the sides
+    cellWidth += 2;
+
     // Print everything out
     for (int row = 0; row < height; row++) {
       printRowSeparator(pen, cellWidth, width);
