@@ -73,7 +73,7 @@ public interface Matrix<T> extends Cloneable {
   } // printCell
 
   /**
-   * Print a matrix.
+   * Print a matrix (without labels).
    *
    * @param <T>
    *   The type of values stored in the matrix.
@@ -83,6 +83,22 @@ public interface Matrix<T> extends Cloneable {
    *   The matrix to print.
    */
   public static <T> void print(PrintWriter pen, Matrix<T> matrix) {
+    print(pen, matrix, false);
+  } // print(PrintWriter, Matrix<T>)
+
+  /**
+   * Print a matrix, with or without labels.
+   * @param <T>
+   *   The type of values stored in the matrix.
+   * @param pen
+   *   The PrintWriter to use for printing.
+   * @param matrix
+   *   The matrix to print.
+   * @param includeLabels
+   *   Set to true if you want labels and false otherwise.
+   */
+  public static <T> void print(PrintWriter pen, Matrix<T> matrix,
+      boolean includeLabels) {
     int width = matrix.width();
     int height = matrix.height();
 
@@ -100,14 +116,31 @@ public interface Matrix<T> extends Cloneable {
     cellWidth += 2;
 
     // Print everything out
+    if (includeLabels) {
+      pen.print(" ".repeat(4));
+      for (int col = 0; col < width; col++) {
+        printCell(pen, String.format("%2d", col), cellWidth + 1);
+      } // for
+      pen.println();
+    } // if
+
     for (int row = 0; row < height; row++) {
+      if (includeLabels) {
+        pen.print(" ".repeat(4));
+      } // if
       printRowSeparator(pen, cellWidth, width);
+      if (includeLabels) {
+        pen.printf(" %2d ", row);
+      } // if
       for (int col = 0; col < width; col++) {
         pen.print("|");
         printCell(pen, toString(matrix.get(row, col)), cellWidth);
       } // for col
       pen.println("|");
     } // for row
+    if (includeLabels) {
+      pen.print(" ".repeat(4));
+    } // if
     printRowSeparator(pen, cellWidth, width);
   } // print(PrintWriter, Matrix)
 

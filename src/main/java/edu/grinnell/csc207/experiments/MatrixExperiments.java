@@ -33,7 +33,7 @@ public class MatrixExperiments {
     pen.println();
     pen.println(caption);
     pen.println();
-    Matrix.print(pen, matrix);
+    Matrix.print(pen, matrix, true);
     pen.println();
   } // figure(PrintWriter, String, Matrix)
 
