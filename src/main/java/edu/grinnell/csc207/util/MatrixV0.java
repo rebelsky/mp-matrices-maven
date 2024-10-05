@@ -416,8 +416,14 @@ public class MatrixV0<T> implements Matrix<T> {
    *
    * @return a copy of the matrix.
    */
-  public Matrix clone() {
-    return this;        // STUB
+  public Matrix<T> clone() {
+    Matrix<T> result = new MatrixV0(this.width(), this.height(), this.defValue);
+    for (int row = 0; row < numRows; row++) {
+      for (int col = 0; col < numCols; col++) {
+        result.set(row, col, this.get(row, col));
+      } // for
+    } // for
+    return result;
   } // clone()
 
   /**
