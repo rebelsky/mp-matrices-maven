@@ -64,8 +64,39 @@ public class MatrixExperiments {
       sample.insertCol(6, new String[] {"A", "B", "C", "D", "E", "F"});
       figure(pen, "insertCol(6, ABCDEF)", sample);
     } catch (ArraySizeException e) {
-      pen.println("*** Failed to insert row 6. ***");
+      pen.println("*** Failed to insert column 6. ***");
     } // try/catch
+
+    try {
+      sample.insertRow(0, new String[] {"P", "Q", "R", "S", "T", "U", "V"});
+      figure(pen, "insertRow(0, PQRSTUV)", sample);
+    } catch (ArraySizeException e) {
+      pen.println("*** Failed to insert row 0. ***");
+    } // try/catch
+
+    sample.deleteCol(1);
+    figure(pen, "deleteCol(1)", sample);
+
+    sample.deleteRow(2);
+    figure(pen, "deleteRow(2)", sample);
+
+    sample.fillLine(0, 0, 1, 1, 4, 4, "Z");
+    figure(pen, "fillLine(0, 0, 1, 1, 4, 4, \"Z\")", sample);
+
+    sample.fillLine(0, 1, 2, 1, 6, 6, " ");
+    figure(pen, "fillLine(0, 1, 2, 1, 6, 6, \" \")", sample);
+
+    sample.fillLine(3, 0, 0, 1, 6, 6, "-");
+    figure(pen, "fillLine(3, 0, 0, 1, 6, 6, \"-\")", sample);
+
+    sample.fillLine(1, 4, 1, 0, 5, 6, "?");
+    figure(pen, "fillLine(1, 4, 1, 0, 5, 6, \"?\")", sample);
+
+    sample.fillRegion(1, 1, 5, 4, "@");
+    figure(pen, "fillRegion(1, 1, 5, 4, \"@\")", sample);
+
+    sample.fillRegion(4, 2, 6, 6, ".");
+    figure(pen, "fillRegion(4, 2, 6, 6, \".\")", sample);
   } // assignmentSample()
 
   // +------+--------------------------------------------------------
