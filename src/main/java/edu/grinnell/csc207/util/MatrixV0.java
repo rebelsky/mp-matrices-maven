@@ -1,9 +1,10 @@
 package edu.grinnell.csc207.util;
 
+import java.util.Arrays;
+
 /**
  * An implementation of two-dimensional matrices.
  *
- * @author Your Name Here
  * @author Samuel A. Rebelsky
  *
  * @param <T>
@@ -13,6 +14,18 @@ public class MatrixV0<T> implements Matrix<T> {
   // +--------+------------------------------------------------------
   // | Fields |
   // +--------+
+
+  /** The default value. */
+  T defValue;
+
+  /** The number of rows in the matrix. */
+  int numRows;
+
+  /** The number of columns in the matrix. */
+  int numCols;
+
+  /** The contents of the matrix. */
+  T[][] contents;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -32,8 +45,19 @@ public class MatrixV0<T> implements Matrix<T> {
    * @throws NegativeArraySizeException
    *   If either the width or height are negative.
    */
+  @SuppressWarnings({"unchecked"})
   public MatrixV0(int width, int height, T def) {
-    // STUB
+    numCols = width;
+    numRows = height;
+    defValue = def;
+
+    contents = (T[][]) new Object[height][];
+    for (int row = 0; row < height; row++) {
+      contents[row] = (T[]) new Object[width];
+      for (int col = 0; col < width; col++) {
+        contents[row][col] = def;
+      } // for col
+    } // for row
   } // MatrixV0(int, int, T)
 
   /**
@@ -51,6 +75,90 @@ public class MatrixV0<T> implements Matrix<T> {
   public MatrixV0(int width, int height) {
     this(width, height, null);
   } // MatrixV0
+
+  // +---------+-----------------------------------------------------
+  // | Helpers |
+  // +---------+
+
+  /**
+   * Determine if a column is valid. If not, throw an exception.
+   *
+   * @param col
+   *   The column to check.
+   *
+   * @throws IndexOutOfBoundException
+   *   If the column is out of bounds.
+   */
+  void checkColumn(int col) {
+    if ((col < 0) || (col > this.numCols)) {
+      throw new IndexOutOfBoundsException(String.format(
+          "Invalid column %d in %d-wide and %d-high matrix",
+          col, this.numCols, this.numRows));
+    } // if
+  } // checkColumn(int)
+
+  /**
+   * Determine if a row is valid. If not, throw an exception.
+   *
+   * @param row
+   *   The row to check.
+   *
+   * @throws IndexOutOfBoundException
+   *   If the row is out of bounds.
+   */
+  void checkRow(int row) {
+    if ((row < 0) || (row > this.numCols)) {
+      throw new IndexOutOfBoundsException(String.format(
+          "Invalid row %d in %d-wide and %d-high matrix",
+          row, this.numCols, this.numRows));
+    } // if
+  } // checkRow(int)
+
+  /**
+   * Insert one value in one column.
+   *
+   * @param oldRow
+   *   The original row.
+   * @param col
+   *   The column to insert.
+   * @param val
+   *   The value to insert.
+   *
+   * @return
+   *   The new array.
+   */
+  T[] insertCol(T[] oldRow, int col, T val) {
+    T[] newRow = Arrays.copyOf(oldRow, oldRow.length+1);
+    for (int i = col+1; i < oldRow.length; i++) {
+      newRow[i+1] = oldRow[i];
+    } // for
+    newRow[col] = val;
+    return newRow;
+  } // insertCol()
+
+  /**
+   * Insert an already-allocated new row.
+   *
+   * @param row
+   *   The number of the row to insert.
+   * @param newRow
+   *   The contents of the new row.
+   */
+  @SuppressWarnings({"unchecked"})
+  void insertRowCommon(int row, T[] newRow) {
+    T[][] newContents = (T[][]) new Object[this.numRows + 1][];
+    // Copy the elements before the new row.
+    for (int i = 0; i < row; i++) {
+      newContents[i] = this.contents[i];
+    } // for
+    // Copy the elements after the new row.
+    for (int i = row; i < this.numRows; i++) {
+      newContents[i+1] = this.contents[i];
+    } // for
+    newContents[row] = newRow;
+    this.contents = newContents;
+    ++this.numRows;
+  } // insertRowCommon(int)
 
   // +--------------+------------------------------------------------
   // | Core methods |
@@ -70,7 +178,7 @@ public class MatrixV0<T> implements Matrix<T> {
    *   If either the row or column is out of reasonable bounds.
    */
   public T get(int row, int col) {
-    return null;        // STUB
+    return this.contents[row][col];
   } // get(int, int)
 
   /**
@@ -87,7 +195,7 @@ public class MatrixV0<T> implements Matrix<T> {
    *   If either the row or column is out of reasonable bounds.
    */
   public void set(int row, int col, T val) {
-    // STUB
+    this.contents[row][col] = val;
   } // set(int, int, T)
 
   /**
@@ -96,7 +204,7 @@ public class MatrixV0<T> implements Matrix<T> {
    * @return the number of rows.
    */
   public int height() {
-    return 5;   // STUB
+    return this.numRows;
   } // height()
 
   /**
@@ -105,7 +213,7 @@ public class MatrixV0<T> implements Matrix<T> {
    * @return the number of columns.
    */
   public int width() {
-    return 3;   // STUB
+    return this.numCols;
   } // width()
 
   /**
@@ -117,8 +225,14 @@ public class MatrixV0<T> implements Matrix<T> {
    * @throws IndexOutOfBoundsException
    *   If the row is negative or greater than the height.
    */
+  @SuppressWarnings({"unchecked"})
   public void insertRow(int row) {
-    // STUB
+    checkRow(row);
+    T[] newRow = (T[]) new Object[this.numCols];
+    for (int col = 0; col < this.numCols; col++) {
+      newRow[col] = defValue;
+    } // for
+    this.insertRowCommon(row, newRow);
   } // insertRow(int)
 
   /**
@@ -135,7 +249,13 @@ public class MatrixV0<T> implements Matrix<T> {
    *   If the size of vals is not the same as the width of the matrix.
    */
   public void insertRow(int row, T[] vals) throws ArraySizeException {
-    // STUB
+    checkRow(row);
+    if (vals.length != this.numCols) {
+      throw new ArraySizeException(String.format(
+          "Incorrect width row. Expected %d, but row was %d",
+          this.numCols, vals.length));
+    } // if
+    insertRowCommon(row, Arrays.copyOf(vals, this.numCols));
   } // insertRow(int, T[])
 
   /**
@@ -148,7 +268,11 @@ public class MatrixV0<T> implements Matrix<T> {
    *   If the column is negative or greater than the width.
    */
   public void insertCol(int col) {
-    // STUB
+    checkColumn(col);
+    for (int row = 0; row < numRows; row++) {
+      this.contents[row] = insertCol(this.contents[row], col, defValue);
+    } // for row
+    ++this.numCols;
   } // insertCol(int)
 
   /**
@@ -165,7 +289,16 @@ public class MatrixV0<T> implements Matrix<T> {
    *   If the size of vals is not the same as the height of the matrix.
    */
   public void insertCol(int col, T[] vals) throws ArraySizeException {
-    // STUB
+    checkColumn(col);
+    if (vals.length != this.numRows) {
+      throw new ArraySizeException(String.format(
+          "Incorrect size column. Expected %d, but size was %d",
+          this.numRows, vals.length));
+    } // if
+    for (int row = 0; row < numRows; row++) {
+      this.contents[row] = insertCol(this.contents[row], col, vals[row]);
+    } // for row
+    ++this.numCols;
   } // insertCol(int, T[])
 
   /**
@@ -178,7 +311,22 @@ public class MatrixV0<T> implements Matrix<T> {
    *   If the row is negative or greater than or equal to the height.
    */
   public void deleteRow(int row) {
-    // STUB
+    if ((row < 0) || (row > this.numRows)) {
+      throw new ArrayIndexOutOfBoundsException(String.format(
+        "Invalid row (%d) for %d-wide and %d-high matrix",
+        row, numCols, numRows));
+    } // if
+    T[][] newContents = (T[][]) new Object[this.numRows - 1][];
+    // Copy the elements before the deleted row
+    for (int i = 0; i < row; i++) {
+      newContents[i] = this.contents[i];
+    } // for
+    // Copy the elements after the new row.
+    for (int i = row+1; i < this.numRows; i++) {
+      newContents[i-1] = this.contents[i];
+    } // for
+    this.contents = newContents;
+    --this.numRows;
   } // deleteRow(int)
 
   /**
@@ -191,7 +339,16 @@ public class MatrixV0<T> implements Matrix<T> {
    *   If the column is negative or greater than or equal to the width.
    */
   public void deleteCol(int col) {
-    // STUB
+    checkColumn(col);
+    for (int row = 0; row < this.numRows; row++) {
+      T[] oldRow = this.contents[row];
+      T[] newRow = Arrays.copyOf(oldRow, this.numCols - 1);
+      for (int c = col+1; c < this.numCols; c++) {
+        newRow[c-1] = oldRow[c];
+      } // for
+      this.contents[row] = newRow;
+    } // for row
+    --this.numCols;
   } // deleteCol(int)
 
   /**
