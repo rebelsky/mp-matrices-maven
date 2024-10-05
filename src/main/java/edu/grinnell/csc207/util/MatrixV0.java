@@ -370,7 +370,11 @@ public class MatrixV0<T> implements Matrix<T> {
    */
   public void fillRegion(int startRow, int startCol, int endRow, int endCol,
       T val) {
-    // STUB
+    for (int row = startRow; row < endRow; row++) {
+      for (int col = startCol; col < endCol; col++) {
+        this.set(row, col, val);
+      } // for col
+    } // for row
   } // fillRegion(int, int, int, int, T)
 
   /**
@@ -396,7 +400,13 @@ public class MatrixV0<T> implements Matrix<T> {
    */
   public void fillLine(int startRow, int startCol, int deltaRow, int deltaCol,
       int endRow, int endCol, T val) {
-    // STUB
+    int row = startRow;
+    int col = startCol;
+    while ((row < endRow) && (col < endCol)) {
+      this.set(row, col, val);
+      row += deltaRow;
+      col += deltaCol;
+    } // while
   } // fillLine(int, int, int, int, int, int, T)
 
   /**
