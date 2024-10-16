@@ -3,7 +3,10 @@ package edu.grinnell.csc207.util;
 import static edu.grinnell.csc207.util.MatrixAssertions.assertMatrixEquals;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,31 +25,31 @@ class TestMatrix {
     Integer six = Integer.valueOf(6);
 
     Matrix<Integer> oneByOneA = new MatrixV0<Integer>(1, 1);
-    assertMatrixEquals(new Integer[][] {{null}}, oneByOneA, 
+    assertMatrixEquals(new Integer[][] {{null}}, oneByOneA,
         "one-by-one of null");
     oneByOneA.set(0, 0, five);
-    assertMatrixEquals(new Integer[][] {{five}}, oneByOneA, 
+    assertMatrixEquals(new Integer[][] {{five}}, oneByOneA,
         "after setting one-by-one to five");
 
     Matrix<String> oneByOneB = new MatrixV0<String>(1, 1);
-    assertMatrixEquals(new String[][] {{null}}, oneByOneB, 
+    assertMatrixEquals(new String[][] {{null}}, oneByOneB,
         "one-by-one of null");
     oneByOneB.set(0, 0, "hi");
-    assertMatrixEquals(new String[][] {{"hi"}}, oneByOneB, 
+    assertMatrixEquals(new String[][] {{"hi"}}, oneByOneB,
         "after setting one-by-one to 'hi'");
 
     Matrix<Integer> oneByOneC = new MatrixV0<Integer>(1, 1, five);
     assertMatrixEquals(new Integer[][] {{five}}, oneByOneC,
         "one-by-one of 5");
     oneByOneC.set(0, 0, six);
-    assertMatrixEquals(new Integer[][] {{six}}, oneByOneC, 
+    assertMatrixEquals(new Integer[][] {{six}}, oneByOneC,
         "after setting one-by-one to six");
 
     Matrix<String> oneByOneD = new MatrixV0<String>(1, 1, " ");
     assertMatrixEquals(new String[][] {{" "}}, oneByOneD,
         "one-by-one of space");
     oneByOneD.set(0, 0, "");
-    assertMatrixEquals(new String[][] {{""}}, oneByOneD, 
+    assertMatrixEquals(new String[][] {{""}}, oneByOneD,
         "after setting one-by-one to empty string");
   } // testOneByOne()
 
@@ -61,7 +64,7 @@ class TestMatrix {
     Integer i3 = Integer.valueOf(3);
     Integer i4 = Integer.valueOf(4);
     Integer i5 = Integer.valueOf(5);
-    
+
     Matrix<Integer> horizA = new MatrixV0<Integer>(5, 1);
     assertMatrixEquals(new Integer[][] {{null, null, null, null, null}}, horizA,
         "R: 5x1 matrix of null");
@@ -148,9 +151,9 @@ class TestMatrix {
     String s3 = "three";
     String s4 = "four";
     String s5 = "five";
-    
+
     Matrix<String> vertA = new MatrixV0<String>(1, 5);
-    assertMatrixEquals(new String[][] {{null}, {null}, {null}, {null}, {null}}, 
+    assertMatrixEquals(new String[][] {{null}, {null}, {null}, {null}, {null}},
         vertA,
         "R: 1x5 matrix of null");
     vertA.set(0, 0, s0);
@@ -207,7 +210,7 @@ class TestMatrix {
     assertMatrixEquals(new String[][] {{s5}, {s3}, {s2}, {s1}, {s5}}, vertB,
         "M: insert last column / 1x4 matrix now 1x5");
     vertB.insertRow(1);
-    assertMatrixEquals(new String[][] {{s5}, {s5}, {s3}, {s2}, {s1}, {s5}}, 
+    assertMatrixEquals(new String[][] {{s5}, {s5}, {s3}, {s2}, {s1}, {s5}},
         vertB,
         "M: insert column one / 1x5 matrix now 1x6");
     vertB.insertRow(3);
@@ -215,18 +218,18 @@ class TestMatrix {
         vertB,
         "M: insert column three / 1x6 matrix now 1x7");
     vertB.deleteRow(6);
-    assertMatrixEquals(new String[][] {{s5}, {s5}, {s3}, {s5}, {s2}, {s1}}, 
+    assertMatrixEquals(new String[][] {{s5}, {s5}, {s3}, {s5}, {s2}, {s1}},
         vertB,
         "M: delete last column / 1x7 matrix now 1x6");
     vertB.deleteRow(0);
     assertMatrixEquals(new String[][] {{s5}, {s3}, {s5}, {s2}, {s1}}, vertB,
         "M: delete first column / 1x6 matrix now 1x5");
     vertB.insertRow(0, new String[] {s4});
-    assertMatrixEquals(new String[][] {{s4}, {s5}, {s3}, {s5}, {s2}, {s1}}, 
+    assertMatrixEquals(new String[][] {{s4}, {s5}, {s3}, {s5}, {s2}, {s1}},
         vertB,
         "M: insert first column / 1x5 matrix now 1x6");
     vertB.insertRow(6, new String[] {s0});
-    assertMatrixEquals(new String[][] {{s4}, {s5}, {s3}, {s5}, {s2}, {s1}, {s0}}, 
+    assertMatrixEquals(new String[][] {{s4}, {s5}, {s3}, {s5}, {s2}, {s1}, {s0}},
         vertB,
          "M: insert last column / 1x6 matrix now 1x7");
   } // testVertical()
@@ -237,13 +240,13 @@ class TestMatrix {
   @Test
   public void testSetException() {
     Matrix<String> matrix = new MatrixV0(7, 3);
-    assertThrows(IndexOutOfBoundsException.class, 
+    assertThrows(IndexOutOfBoundsException.class,
         () -> {matrix.set(-1, 0, "value");},
         "E: set with negative row");
-    assertThrows(IndexOutOfBoundsException.class, 
+    assertThrows(IndexOutOfBoundsException.class,
         () -> {matrix.set(10, 1, "value");},
         "E: set with much too big row");
-    assertThrows(IndexOutOfBoundsException.class, 
+    assertThrows(IndexOutOfBoundsException.class,
         () -> {matrix.set(3, 2, "value");},
         "E: set with slightly too big row");
     assertThrows(IndexOutOfBoundsException.class,
@@ -263,13 +266,13 @@ class TestMatrix {
   @Test
   public void testGetException() {
     Matrix<String> matrix = new MatrixV0(3, 6);
-    assertThrows(IndexOutOfBoundsException.class, 
+    assertThrows(IndexOutOfBoundsException.class,
         () -> {matrix.get(-1, 0);},
         "E: get with negative row");
-    assertThrows(IndexOutOfBoundsException.class, 
+    assertThrows(IndexOutOfBoundsException.class,
         () -> {matrix.get(10, 1);},
         "E: get with much too big row");
-    assertThrows(IndexOutOfBoundsException.class, 
+    assertThrows(IndexOutOfBoundsException.class,
         () -> {matrix.get(6, 2);},
         "E: get with slightly too big row");
     assertThrows(IndexOutOfBoundsException.class,
@@ -299,24 +302,24 @@ class TestMatrix {
         "E: insert first invalid row");
 
     assertThrows(IndexOutOfBoundsException.class,
-        () -> 
-            {matrix.insertRow(-1, 
+        () ->
+            {matrix.insertRow(-1,
                 new Integer[] {four, four, four, four, four});},
         "E: insert negative row");
     assertThrows(IndexOutOfBoundsException.class,
-        () -> 
-            {matrix.insertRow(4, 
+        () ->
+            {matrix.insertRow(4,
                 new Integer[] {four, four, four, four, four});},
         "E: insert first invalid row");
 
     assertThrows(ArraySizeException.class,
-        () -> 
-            {matrix.insertRow(0, 
+        () ->
+            {matrix.insertRow(0,
                 new Integer[] {four, four, four, four});},
         "E: insert too-small row");
     assertThrows(ArraySizeException.class,
-        () -> 
-            {matrix.insertRow(0, 
+        () ->
+            {matrix.insertRow(0,
                 new Integer[] {four, four, four, four, four, four});},
         "E: insert too-large row");
   } // testInsertRowException()
@@ -430,5 +433,92 @@ class TestMatrix {
         strings,
         "E: After deleting column 1");
   } // testAssorted()
+
+  /**
+   * Some fun with equality.
+   */
+  @Test
+  public void testEquals() throws ArraySizeException {
+    // Build five equivalent matrices in different ways.
+    Matrix<String> matrix0 = new MatrixV0<String>(4, 3, "X");
+
+    Matrix<String> matrix1 = new MatrixV0<String>(3, 3, "X");
+    matrix1.insertCol(1);
+
+    Matrix<String> matrix2 = new MatrixV0<String>(4, 3);
+    matrix2.fillRegion(0, 0, 3, 4, "EX".substring(1));
+
+    Matrix<String> matrix3 = new MatrixV0<String>(4, 2, new String("X"));
+    matrix3.insertRow(0, new String[] {"X", "X", "X", "X"});
+
+    Matrix<String> matrix4 = new MatrixV0<String>(5, 4, "X" + "");
+    matrix4.deleteRow(0);
+    matrix4.deleteCol(1);
+
+    Object[] matrices = 
+        new Object[] { matrix0, matrix1, matrix2, matrix3, matrix4 };
+
+    // Check that they are all equal
+    for (int i = 0; i < matrices.length; i++) {
+      for (int j = 0; j < matrices.length; j++) {
+        try {
+          assertTrue(matrices[i].equals(matrices[j]),
+              String.format("E: matrices[%d].equals(matrices[%d])", i, j));
+        } catch (ArrayIndexOutOfBoundsException e) {
+          fail(String.format("E: matrices[%d].equals(matrices[%d]): %s", 
+              i, j, e.getMessage()));
+        } // try/catch
+      } // for j
+    } // for i
+
+    // Mutate all of the matrices a little bit, but in the same way.
+    matrix0.set(0, 0, " ");
+    matrix0.set(1, 1, " ");
+    matrix0.set(2, 2, " ");
+    matrix1.fillLine(0, 0, 1, 1, 3, 3, " ");
+    matrix2.fillLine(0, 0, 1, 1, 2, 2, "  ".substring(1));
+    matrix2.set(2, 2, " ");
+    matrix3.set(0, 0, "X ".substring(1));
+    matrix3.fillLine(1, 1, 1, 1, 3, 3, "X ".substring(1));
+    matrix4.fillLine(0, 0, 1, 1, 1, 1, " ");
+    matrix4.fillLine(1, 1, 1, 1, 2, 2, " ");
+    matrix4.fillLine(2, 2, 1, 1, 3, 3, " ");
+
+    // Check that they are all equal
+    for (int i = 0; i < matrices.length; i++) {
+      for (int j = 0; j < matrices.length; j++) {
+        try {
+          assertTrue(matrices[i].equals(matrices[j]),
+              String.format("E: new matrices[%d].equals(matrices[%d])", i, j));
+        } catch (ArrayIndexOutOfBoundsException e) {
+          fail(String.format("E: new matrices[%d].equals(matrices[%d]): %s", 
+              i, j, e.getMessage()));
+        } // try/catch
+      } // for j
+    } // for i
+ 
+    // Make them all different
+    matrix0.set(0, 0, "A");
+    matrix1.deleteRow(0);
+    matrix2.deleteRow(1);
+    matrix3.deleteCol(0);
+    matrix4.deleteCol(3);
+
+    // Check that they are no longer equal
+    for (int i = 0; i < matrices.length; i++) {
+      for (int j = 0; j < matrices.length; j++) {
+        if (i != j) {
+          try {
+            assertFalse(matrices[i].equals(matrices[j]),
+                String.format("E: newer matrices[%d].equals(matrices[%d])", 
+                    i, j));
+          } catch (ArrayIndexOutOfBoundsException e) {
+            fail(String.format("E: newer matrices[%d].equals(matrices[%d]): %s",
+                i, j, e.getMessage()));
+          } // try/catch
+        } // if
+      } // for j
+    } // for i
+  } // testEquals()
 
 } // TestMatrix
