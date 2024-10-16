@@ -107,7 +107,7 @@ public class MatrixV0<T> implements Matrix<T> {
    *   If the row is out of bounds.
    */
   void checkRow(int row) {
-    if ((row < 0) || (row > this.numCols)) {
+    if ((row < 0) || (row > this.numRows)) {
       throw new IndexOutOfBoundsException(String.format(
           "Invalid row %d in %d-wide and %d-high matrix",
           row, this.numCols, this.numRows));
@@ -129,7 +129,7 @@ public class MatrixV0<T> implements Matrix<T> {
    */
   T[] insertCol(T[] oldRow, int col, T val) {
     T[] newRow = Arrays.copyOf(oldRow, oldRow.length+1);
-    for (int i = col+1; i < oldRow.length; i++) {
+    for (int i = col; i < oldRow.length; i++) {
       newRow[i+1] = oldRow[i];
     } // for
     newRow[col] = val;
