@@ -40,4 +40,32 @@ class MatrixAssertions {
     } // try/catch
     assertEquals(expected, output, msg);
   } // assertFigure(String, Matrix<T>, String)
+
+  /**
+   * Assert that a matrix has the appropriate form.
+   *
+   * @param expected
+   *   The expected form, as a two-dimensional array. Warning! Assumes
+   *   this is rectangular.
+   * @param actual
+   *   The matrix we're comparing.
+   * @param message
+   *   The message to provide.
+   */
+  static <T> void assertMatrixEquals(T[][] expected, Matrix<T> actual,
+      String message) {
+    int height = actual.height();
+    int width = actual.width();
+    assertEquals(expected.length, height, message + " [height]");
+    assertEquals(expected[0].length, width, message + " [width]");
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+        T e = expected[row][col];
+        T a = actual.get(row, col);
+        assertEquals(e, a,
+            String.format("%s [at (%d,%d)]", message, row, col));
+      } // for col
+    } // for row
+  } // assertMatrixEquals()
+
 } // class MatrixAssertions
