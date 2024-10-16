@@ -435,8 +435,32 @@ public class MatrixV0<T> implements Matrix<T> {
    * @return true if the other object is a matrix with the same width,
    * height, and equal elements; false otherwise.
    */
+  @SuppressWarnings({"unchecked"})
   public boolean equals(Object other) {
-    return this == other;       // STUB
+    if (! (other instanceof Matrix)) {
+      return false;
+    } // if
+    try {
+      Matrix otherMatrix = (Matrix) other;
+      if (otherMatrix.width() != this.width()) {
+        return false;
+      } // if
+      if (otherMatrix.height() != this.height()) {
+        return false;
+      } // if
+      for (int row = 0; row < this.height(); row++) {
+        for (int col = 0; col < this.width(); col++) {
+          if (! (this.get(row, col).equals(otherMatrix.get(row, col)))) {
+            return false;
+          } // if
+        } // for col
+      } // for row
+    } catch (ClassCastException e) {
+      return false;
+    } // try catch
+
+    // We've found no differences!
+    return true;
   } // equals(Object)
 
   /**
